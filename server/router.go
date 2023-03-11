@@ -21,6 +21,9 @@ func Init(e *gin.Engine) {
 	}
 	Cors(e)
 	g := e.Group(conf.URL.Path)
+	g.Any("/ping", func(c *gin.Context) {
+		c.String(200, "pong")
+	})
 	common.SecretKey = []byte(conf.Conf.JwtSecret)
 	g.Use(middlewares.StoragesLoaded)
 	if conf.Conf.MaxConnections > 0 {
@@ -123,7 +126,9 @@ func _fs(g *gin.RouterGroup) {
 	g.Any("/dirs", handles.FsDirs)
 	g.POST("/mkdir", handles.FsMkdir)
 	g.POST("/rename", handles.FsRename)
+	g.POST("/regex_rename", handles.FsRegexRename)
 	g.POST("/move", handles.FsMove)
+	g.POST("/recursive_move", handles.FsRecursiveMove)
 	g.POST("/copy", handles.FsCopy)
 	g.POST("/remove", handles.FsRemove)
 	g.PUT("/put", middlewares.FsUp, handles.FsStream)
